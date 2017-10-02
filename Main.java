@@ -3,6 +3,7 @@ package disSystem;
 public class Main {
 
     public static void main(String[] args) {
-        // write your code here
+        TCPServer server = new TCPServer(6969);
+        server.server();
     }
 }
