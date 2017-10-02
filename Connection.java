@@ -47,5 +47,13 @@ public class Connection extends Thread {
             System.out.println("Disconnected.");
             //e.printStackTrace();
         }
+        finally {
+            try {
+                client.close();
+            }
+            catch(IOException e) {
+                System.out.println(e);
+            }
+        }
     }
 }

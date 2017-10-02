@@ -23,13 +23,15 @@ public class Client {
 
                 String command = input.nextLine();
                 out.writeUTF(command);
-                writer = new FileOutputStream(SAVEPATH + command);
-                byte[] buffer = new byte[8192];
-                int len;
-                while ((len = in.read(buffer)) != -1) {
-                    writer.write(buffer, 0, len);
+                if(!in.readBoolean()) {
+                    writer = new FileOutputStream(SAVEPATH + command);
+                    byte[] buffer = new byte[8192];
+                    int len;
+                    while ((len = in.read(buffer)) != -1) {
+                        writer.write(buffer, 0, len);
+                    }
+                    System.out.println("File recieved.");
                 }
-                System.out.println("File recieved.");
 
                 writer.close();
                 in.close();
