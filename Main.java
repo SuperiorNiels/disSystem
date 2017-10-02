@@ -1,4 +1,4 @@
-package distributed-system;
+package disSystem;
 
 public class Main {
 
