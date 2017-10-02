@@ -14,8 +14,8 @@ public class TCPServer {
         try {
             ServerSocket socket = new ServerSocket(port);
             while(true) {
-                Socket s = socket.accept();
-                Connection c = new Connection(s);
+                Socket clientSocket = socket.accept();
+                Connection c = new Connection(clientSocket);
             }
         }
         catch(IOException e) {
