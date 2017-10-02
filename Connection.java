@@ -13,8 +13,7 @@ public class Connection {
             in = new DataInputStream(client.getInputStream());
             out = new DataOutputStream(client.getOutputStream());
             while(true) {
-                int c = in.readChar();
-                out.writeChar(c);
+                out.writeBytes("Hello from the server :)\n");
             }
         }
         catch(IOException e) {
