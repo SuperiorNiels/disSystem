@@ -1,28 +1,43 @@
-package disSystem;
-
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class Client {
     int port = 6969;
     DataInputStream in;
     DataOutputStream out;
+    Scanner input;
+    FileOutputStream writer;
+    String SAVEPATH = "/home/niels/tcpTest/";
     public Client(int port) {
         this.port = port;
     }
 
     public void connect() {
-        try {
-            Socket s = new Socket("localhost",port);
-            in = new DataInputStream(s.getInputStream());
-            out = new DataOutputStream(s.getOutputStream());
-            while(true) {
-                String line = in.readUTF();
-                System.out.println(line);
+        input = new Scanner(System.in);
+        while(true) {
+            try {
+                Socket s = new Socket("localhost", port);
+                in = new DataInputStream(s.getInputStream());
+                out = new DataOutputStream(s.getOutputStream());
+
+                String command = input.nextLine();
+                out.writeUTF(command);
+                writer = new FileOutputStream(SAVEPATH + command);
+                byte[] buffer = new byte[8192];
+                int len;
+                while ((len = in.read(buffer)) != -1) {
+                    writer.write(buffer, 0, len);
+                }
+                System.out.println("File recieved.");
+
+                writer.close();
+                in.close();
+                out.close();
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
-        catch (IOException e) {
-            System.out.println(e);
         }
 
     }
