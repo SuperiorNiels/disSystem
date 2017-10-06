@@ -1,37 +1,59 @@
 package disSystem;
 
-/**
- * Created by wubben on 2-10-2017.
- */
-
 import java.net.*;
 import java.io.*;
 
 public class UDPServer {
+    int port;
+    FileInputStream reader;
+    String PATH = "/home/niels/Documents/";
+    public UDPServer(int port) {
+        this.port = port;
+    }
 
-        public static void main(String args[]) {
-            DatagramSocket aSocket = null;
+    public void server() {
+        byte[] buffer = new byte[8192];
+        try {
+            DatagramSocket socket = new DatagramSocket(port);
+            while(true) {
+                DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+                socket.receive(request);
+                String input = new String(request.getData(),0,request.getLength());
 
-            try {
-                aSocket = new DatagramSocket(6969);
-                byte[] buffer = new byte[1000];
-                while (true) {
-                    //maak leeg packet
-                    DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-                    //vul het packet als het aankomt
-                    aSocket.receive(request);
-                    //maak een nieuw packet "reply" en stuur dit terug
-                    DatagramPacket reply = new DatagramPacket(request.getData(),
-                            request.getLength(), request.getAddress(), request.getPort());
-                    aSocket.send(reply);
+                String response = "NOT_FOUND";
+                try {
+                    File file = new File(PATH + input);
+                    reader = new FileInputStream(file);
+                    response = "FOUND";
+
+                    byte[] to_send = response.getBytes();
+                    DatagramPacket reply = new DatagramPacket(to_send, to_send.length,
+                            request.getAddress(), request.getPort());
+                    socket.send(reply);
+
+                    int i = 0;
+                    while (reader.read(buffer) != -1) {
+                        DatagramPacket data = new DatagramPacket(buffer, buffer.length,
+                                request.getAddress(), request.getPort());
+                        socket.send(data);
+                        System.out.println("Pakket nr. "+i);
+                        i++;
+                    }
+
+                    reader.close();
                 }
-            } catch (SocketException e) {
-                System.out.println(e);
-            } catch (IOException e) {
-                System.out.println(e);
-            } finally {
-                if (aSocket != null) aSocket.close();
+                catch(FileNotFoundException e) {
+                    byte[] to_send = response.getBytes();
+                    DatagramPacket reply = new DatagramPacket(to_send, to_send.length,
+                            request.getAddress(), request.getPort());
+                    socket.send(reply);
+                }
             }
         }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
 

@@ -1,15 +1,17 @@
+package disSystem;
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Client {
+public class TCPClient {
     int port = 6969;
     DataInputStream in;
     DataOutputStream out;
     Scanner input;
     FileOutputStream writer;
     String SAVEPATH = "/home/niels/tcpTest/";
-    public Client(int port) {
+    public TCPClient(int port) {
         this.port = port;
     }
 
@@ -17,7 +19,7 @@ public class Client {
         input = new Scanner(System.in);
         while(true) {
             try {
-                Socket s = new Socket("localhost", port);
+                Socket s = new Socket("localhost", 6969);
                 in = new DataInputStream(s.getInputStream());
                 out = new DataOutputStream(s.getOutputStream());
 
@@ -31,9 +33,9 @@ public class Client {
                         writer.write(buffer, 0, len);
                     }
                     System.out.println("File recieved.");
+                    writer.close();
                 }
 
-                writer.close();
                 in.close();
                 out.close();
                 s.close();
