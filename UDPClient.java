@@ -37,7 +37,7 @@ public class UDPClient {
                 if (number_of_packets > 0) {
                     FileOutputStream writer = new FileOutputStream(PATH + name);
                     int i = 0;
-                    while (number_of_packets >= i) {
+                    while (number_of_packets > i) {
                         socket.receive(data);
                         writer.write(data.getData(), 0, data.getLength());
                         i++;

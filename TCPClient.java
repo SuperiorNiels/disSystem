@@ -19,7 +19,7 @@ public class TCPClient {
         input = new Scanner(System.in);
         while(true) {
             try {
-                Socket s = new Socket("192.168.1.1", 6969);
+                Socket s = new Socket("localhost", 6969);
                 in = new DataInputStream(s.getInputStream());
                 out = new DataOutputStream(s.getOutputStream());
 
