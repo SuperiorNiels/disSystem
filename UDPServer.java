@@ -4,15 +4,16 @@ import java.net.*;
 import java.io.*;
 
 public class UDPServer {
-    int port;
+    private int port;
     FileInputStream reader;
+    int BUFFER_SIZE = 1024*62;
     String PATH = "/home/niels/Documents/";
     public UDPServer(int port) {
         this.port = port;
     }
 
     public void server() {
-        byte[] buffer = new byte[8192];
+        byte[] buffer = new byte[BUFFER_SIZE];
         try {
             DatagramSocket socket = new DatagramSocket(port);
             while(true) {
@@ -20,33 +21,35 @@ public class UDPServer {
                 socket.receive(request);
                 String input = new String(request.getData(),0,request.getLength());
 
-                String response = "NOT_FOUND";
                 try {
                     File file = new File(PATH + input);
                     reader = new FileInputStream(file);
-                    response = "FOUND";
+                    long size = file.length();
+                    System.out.println("File '"+input+"' found. Sending "+size+" bytes.");
 
-                    byte[] to_send = response.getBytes();
-                    DatagramPacket reply = new DatagramPacket(to_send, to_send.length,
-                            request.getAddress(), request.getPort());
-                    socket.send(reply);
+                    String size_string = Double.toString(Math.ceil((double) size/BUFFER_SIZE));
+                    DatagramPacket size_packet = new DatagramPacket(size_string.getBytes()
+                            ,size_string.length(), request.getAddress(), request.getPort());
+                    socket.send(size_packet);
 
+                    //send file
+                    int len;
                     int i = 0;
-                    while (reader.read(buffer) != -1) {
-                        DatagramPacket data = new DatagramPacket(buffer, buffer.length,
+                    DatagramPacket data;
+                    while ((len = reader.read(buffer)) != -1) {
+                        data = new DatagramPacket(buffer, len,
                                 request.getAddress(), request.getPort());
                         socket.send(data);
-                        System.out.println("Pakket nr. "+i);
                         i++;
                     }
-
+                    System.out.println("Sent "+i+" packet(s).");
                     reader.close();
                 }
                 catch(FileNotFoundException e) {
-                    byte[] to_send = response.getBytes();
-                    DatagramPacket reply = new DatagramPacket(to_send, to_send.length,
-                            request.getAddress(), request.getPort());
-                    socket.send(reply);
+                    String size_string = "0";
+                    DatagramPacket size_packet = new DatagramPacket(size_string.getBytes()
+                            ,size_string.length(), request.getAddress(), request.getPort());
+                    socket.send(size_packet);
                 }
             }
         }
