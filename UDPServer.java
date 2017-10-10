@@ -2,6 +2,7 @@ package disSystem;
 
 import java.net.*;
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 public class UDPServer {
     private int port;
@@ -39,6 +40,12 @@ public class UDPServer {
                     while ((len = reader.read(buffer)) != -1) {
                         data = new DatagramPacket(buffer, len,
                                 request.getAddress(), request.getPort());
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(2);
+                        }
+                        catch (InterruptedException e) {
+                            System.out.println("Interrupted.");
+                        }
                         socket.send(data);
                         i++;
                     }
