@@ -41,7 +41,7 @@ public class UDPServer {
                         data = new DatagramPacket(buffer, len,
                                 request.getAddress(), request.getPort());
                         try {
-                            TimeUnit.MILLISECONDS.sleep(2);
+                            TimeUnit.MILLISECONDS.sleep(1);
                         }
                         catch (InterruptedException e) {
                             System.out.println("Interrupted.");

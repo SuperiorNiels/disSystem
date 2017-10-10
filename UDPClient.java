@@ -33,7 +33,7 @@ public class UDPClient {
                 socket.receive(data);
 
                 long number_of_packets = Double.valueOf(new String(data.getData(), 0, data.getLength())).longValue();
-                System.out.println(number_of_packets);
+                System.out.println("Recieving file in "+number_of_packets+" packets.");
                 if (number_of_packets > 0) {
                     FileOutputStream writer = new FileOutputStream(PATH + name);
                     int i = 0;
@@ -41,7 +41,7 @@ public class UDPClient {
                         socket.receive(data);
                         writer.write(data.getData(), 0, data.getLength());
                         i++;
-                        System.out.println("Packet: "+i);
+                        //System.out.println("Recieved "+i+" packets.");
                     }
 
                     writer.close();

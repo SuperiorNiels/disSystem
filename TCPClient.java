@@ -26,6 +26,7 @@ public class TCPClient {
                 String command = input.nextLine();
                 out.writeUTF(command);
                 if(!in.readBoolean()) {
+                    System.out.println("File found, downloading...");
                     writer = new FileOutputStream(SAVEPATH + command);
                     byte[] buffer = new byte[8192];
                     int len;

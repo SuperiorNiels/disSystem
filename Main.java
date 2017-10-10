@@ -27,6 +27,6 @@ public class Main {
         }
 
         System.out.println("Please enter a parameter for the type of service.");
-        System.out.println("Parameter 1: TCP/UDP\nParameter 2: server/client");
+        System.out.println("java -jar disSystem.jar tcp/udp server/client");
     }
 }
